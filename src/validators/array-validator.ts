@@ -1,10 +1,11 @@
-import { BaseSchema } from "./types";
+import { BaseSchema } from "../types";
 
-export class ArrayValidator<T> implements BaseSchema<Array<T>> {
+export class ArrayValidator<T = unknown> extends BaseSchema<Array<T>> {
   private validations: Array<(value: T[]) => boolean> = [];
   private errorMessages: string[] = [];
 
-  constructor(private elementValidator?: any) {
+  constructor(private elementValidator?: BaseSchema<T>) {
+    super()
     this.addValidation((val) => Array.isArray(val), "Value must be an array");
   }
 
@@ -100,7 +101,7 @@ export class ArrayValidator<T> implements BaseSchema<Array<T>> {
       const array = value as T[];
       return array.map((item, index) => {
         try {
-          return this.elementValidator.parse(item);
+          return this.elementValidator!.parse(item);
         } catch (error) {
           throw new Error(`Element at index ${index}: ${error}`);
         }

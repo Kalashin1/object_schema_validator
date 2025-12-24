@@ -1,7 +1,7 @@
-import { BaseSchema } from "./types";
+import { BaseSchema, Flatten, InferSchema } from "../types";
 
 export class ObjectSchemaValidator<T extends Record<string, any> = {}>
-  implements BaseSchema<T>
+  extends BaseSchema<T>
 {
   private shape: { [K in keyof T]: any } = {} as any;
 
@@ -10,10 +10,30 @@ export class ObjectSchemaValidator<T extends Record<string, any> = {}>
     validator: BaseSchema<V>
   ): ObjectSchemaValidator<T & Record<K, V>> {
     this.shape[name as keyof T] = validator;
-    return this as unknown as ObjectSchemaValidator<T & Record<K,V>>;
+    return this as unknown as ObjectSchemaValidator<T & Record<K, V>>;
   }
 
-  validate(value: unknown){
+  static create<T extends Record<string, BaseSchema<any>>>(
+    shape: T
+  ): ObjectSchemaValidator<{ [K in keyof T]: InferSchema<T[K]> }> {
+    // This actually creates an instance
+    return new ObjectSchemaValidator().extend(shape);
+  }
+
+  extend<S extends Record<string, BaseSchema<any>>>(
+    shape: S
+  ): ObjectSchemaValidator<T & { [K in keyof S]: InferSchema<S[K]> }> {
+    const newShape = { ...this.shape, ...shape };
+    const validator = new ObjectSchemaValidator<
+      T & {
+        [K in keyof S]: InferSchema<S[K]>;
+      }
+    >();
+    (validator as any).shape = newShape;
+    return validator;
+  }
+
+  validate(value: unknown) {
     const errors: Record<string, string[]> = {};
 
     if (typeof value !== "object" || value === null || Array.isArray(value)) {
@@ -65,8 +85,9 @@ export class ObjectSchemaValidator<T extends Record<string, any> = {}>
     return value as T;
   }
 
-
-  build(): ObjectSchemaValidator<T>{
-    return this;
+  build(): ObjectSchemaValidator<Flatten<T>> {
+    return this as unknown as ObjectSchemaValidator<Flatten<T>>;
   }
+
+  readonly __type?: T;
 }

@@ -1,10 +1,11 @@
-import { BaseSchema } from "./types";
+import { BaseSchema } from "../types";
 
-export class NumberValidator implements BaseSchema<number> {
+export class NumberValidator extends BaseSchema<number> {
   private validations: Array<(value: number) => boolean> = [];
   private errorMessages: string[] = [];
 
   constructor() {
+    super();
     this.addValidation(
       (val) => typeof val === "number" && !isNaN(val),
       "Value must be a number"

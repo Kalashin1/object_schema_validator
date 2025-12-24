@@ -1,8 +1,11 @@
-export class StringValidator {
+import { BaseSchema } from "../types";
+
+export class StringValidator extends BaseSchema<string> {
   private validations: Array<(value: string) => boolean> = [];
   private errorMessages: string[] = [];
 
   constructor() {
+    super();
     this.addValidation(
       (val) => typeof val === "string",
       "Value must be a string"
@@ -28,7 +31,7 @@ export class StringValidator {
   min(length: number, errorMessage?: string): this {
     this.addValidation(
       (val) => val.length >= length,
-      errorMessage || `String must be at most ${length} characters`
+      errorMessage || `String must be at least ${length} characters`
     );
     return this;
   }

@@ -1,10 +1,11 @@
-import { BaseSchema } from "./types"
+import { BaseSchema } from "../types"
 
-export class BooleanValidator implements BaseSchema<boolean> {
+export class BooleanValidator extends BaseSchema<boolean> {
   private validations: Array<(value: boolean) => boolean> = []
   private errorMessages: string[] = []
 
   constructor(){
+    super();
     this.addValidation(
       (val) => typeof val === 'boolean',
       'Value must be a boolean'
