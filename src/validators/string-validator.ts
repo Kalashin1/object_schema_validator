@@ -63,39 +63,64 @@ export class StringValidator extends BaseSchema<string> {
     );
   }
 
+  date(errorMessage?: string): this {
+    return this.regex(
+      /^\d{4}-\d{2}-\d{2}T/,
+      errorMessage || "Invalid date format"
+    );
+  }
+
+  uuid(errorMessage?: string): this {
+    return this.regex(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
+      errorMessage || "Invalid UUID format"
+    );
+  }
+
+  phone(errorMessage?: string): this {
+    return this.regex(
+      /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/,
+      errorMessage || "Invalid phone number format"
+    );
+  }
+
+  alphanumeric(errorMessage?: string): this {
+    return this.regex(
+      /^[a-zA-Z0-9]+$/,
+      errorMessage || "Must contain only letters and numbers"
+    );
+  }
+
   url(errorMessage?: string): this {
     return this.regex(
       /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
       errorMessage || "Invalid URL format"
     );
   }
-  
+
   validate(value: unknown): { isValid: boolean; errors: string[] } {
     const errors: string[] = [];
 
-    for(let i = 0; i < this.validations.length; i++){
+    for (let i = 0; i < this.validations.length; i++) {
       const validation = this.validations[i];
       const errorMsg = this.errorMessages[i];
 
-
       try {
-        if (!validation(value as string)) 
-          errors.push(errorMsg)
+        if (!validation(value as string)) errors.push(errorMsg);
       } catch (error) {
-        errors.push(`Validation error: ${error}`)
+        errors.push(`Validation error: ${error}`);
       }
     }
 
     return {
       isValid: errors.length === 0,
-      errors
-    }
+      errors,
+    };
   }
 
   parse(value: unknown): string {
     const result = this.validate(value);
-    if (!result.isValid)
-      throw new Error(result.errors.join(', '))
+    if (!result.isValid) throw new Error(result.errors.join(", "));
     return value as string;
   }
 }
