@@ -44,6 +44,14 @@ export class NumberValidator extends BaseSchema<number> {
     return this;
   }
 
+  actual(value: number, errorMessage?: string): this {
+    this.addValidation(
+      (val) => val === value,
+      errorMessage || `${value} does not match expected`
+    )
+    return this;
+  }
+
   even(errorMessage?: string) {
     this.addValidation((val) => val % 2 === 0, errorMessage || "Must be even");
     return this;
@@ -51,6 +59,7 @@ export class NumberValidator extends BaseSchema<number> {
 
   odd(errorMessage?: string) {
     this.addValidation((val) => val % 2 !== 0, errorMessage || "Must be odd");
+    return this;
   }
 
   validate(value: unknown) {
