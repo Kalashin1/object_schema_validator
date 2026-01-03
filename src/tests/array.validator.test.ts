@@ -71,7 +71,7 @@ describe("ArrayValidator", () => {
     expect(() => arraySchema.parse([0, 1, 2])).toThrow();
   });
 
-  test("it should validate an array of custom", () => {
+  test("it should validate an array of object schemas", () => {
     const arraySchema = schema
       .array()
       .of(schema.object.create({ name: schema.string().min(3) }));

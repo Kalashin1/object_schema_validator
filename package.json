@@ -1,7 +1,7 @@
 {
-  "name": "schema_validator",
-  "version": "1.0.0",
-  "main": "index.js",
+  "name": "@kalashinkov/schema_validator",
+  "version": "0.1.0",
+  "description": "A type-safe schema validation library for TypeScript",
   "dependencies": {
     "ansi-escapes": "^4.3.2",
     "ansi-regex": "^6.2.2",
@@ -204,13 +204,37 @@
     "ts-jest": "^29.4.6",
     "typescript": "^5.9.3"
   },
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "build": "tsc && tsc --module es2020 --outDir dist/esm",
+    "prepublishOnly": "npm run build"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Kalashin1/object_schema_validator"
+  },
+  "bugs": {
+    "url": "https://github.com/Kalashin1/object_schema_validator/issues"
+  },
+  "homepage": "https://github.com/Kalashin1/object_schema_validator#readme",
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "description": ""
+  "license": "ISC"
 }

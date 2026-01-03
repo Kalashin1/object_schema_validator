@@ -1,15 +1,13 @@
 import { BaseSchema } from "../types";
 
 export class ArrayValidator<T = unknown> extends BaseSchema<Array<T>> {
-  private validations: Array<(value: T[]) => boolean> = [];
-  private errorMessages: string[] = [];
 
   constructor(private elementValidator?: BaseSchema<T>) {
     super()
     this.addValidation((val) => Array.isArray(val), "Value must be an array");
   }
 
-  private addValidation(
+  protected addValidation(
     validation: (value: T[]) => boolean,
     errorMessage: string
   ) {
@@ -74,29 +72,9 @@ export class ArrayValidator<T = unknown> extends BaseSchema<Array<T>> {
     return newValidator;
   }
 
-  validate(value: unknown) {
-    const errors: string[] = [];
-
-    for (let i = 0; i < this.validations.length; i++) {
-      const validation = this.validations[i];
-      const errorMsg = this.errorMessages[i];
-
-      try {
-        if (!validation(value as T[])) errors.push(errorMsg);
-      } catch (error) {
-        errors.push(`Validation error: ${error}`);
-      }
-    }
-
-    return {
-      isValid: errors.length === 0,
-      errors,
-    };
-  }
-
   parse(value: unknown): T[] {
     const result = this.validate(value);
-    if (!result.isValid) throw new Error(result.errors.join(", "));
+    if (!result.isValid) throw new Error((result.errors as string[]).join(", "));
     if (this.elementValidator) {
       const array = value as T[];
       return array.map((item, index) => {

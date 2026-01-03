@@ -1,8 +1,6 @@
 import { BaseSchema } from "../types";
 
 export class StringValidator extends BaseSchema<string> {
-  private validations: Array<(value: string) => boolean> = [];
-  private errorMessages: string[] = [];
 
   constructor() {
     super();
@@ -10,14 +8,6 @@ export class StringValidator extends BaseSchema<string> {
       (val) => typeof val === "string",
       "Value must be a string"
     );
-  }
-
-  private addValidation(
-    validation: (value: string) => boolean,
-    errorMessage: string
-  ): void {
-    this.validations.push(validation);
-    this.errorMessages.push(errorMessage);
   }
 
   regex(pattern: RegExp, errorMessage?: string): this {
@@ -96,31 +86,5 @@ export class StringValidator extends BaseSchema<string> {
       /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
       errorMessage || "Invalid URL format"
     );
-  }
-
-  validate(value: unknown): { isValid: boolean; errors: string[] } {
-    const errors: string[] = [];
-
-    for (let i = 0; i < this.validations.length; i++) {
-      const validation = this.validations[i];
-      const errorMsg = this.errorMessages[i];
-
-      try {
-        if (!validation(value as string)) errors.push(errorMsg);
-      } catch (error) {
-        errors.push(`Validation error: ${error}`);
-      }
-    }
-
-    return {
-      isValid: errors.length === 0,
-      errors,
-    };
-  }
-
-  parse(value: unknown): string {
-    const result = this.validate(value);
-    if (!result.isValid) throw new Error(result.errors.join(", "));
-    return value as string;
   }
 }
