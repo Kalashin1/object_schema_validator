@@ -207,9 +207,9 @@ schema.string().refine(
 );
 
 // Transform values
-schema.string()
-  .transform(val => val.trim())
-  .transform(val => val.toLowerCase());
+// schema.string()
+//   .transform(val => val.trim())
+//   .transform(val => val.toLowerCase());
 
 // Cross-field validation
 schema.object({
@@ -230,15 +230,6 @@ try {
 } catch (error) {
   console.error(error.message);
   // "Validation failed: name: Must be at least 3 characters"
-}
-
-// Safe parse (returns result object)
-const result = schema.safeParse(input);
-if (result.success) {
-  console.log(result.data);
-} else {
-  console.error(result.error.message);
-  console.error(result.error.path); // Field path
 }
 ```
 
