@@ -1,5 +1,3 @@
-I'll help you create a comprehensive README.md file based on your code. Let me structure it professionally with all the necessary sections.
-
 # Schema Validator 📋
 
 A lightweight, type-safe schema validation library for TypeScript with runtime validation. Inspired by Zod but with its own unique features and dual API pattern.
